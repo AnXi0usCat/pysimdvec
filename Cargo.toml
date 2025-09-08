@@ -1,0 +1,3 @@
+[workspace]
+members = ["simdvec-core"]
+resolver = "2"
