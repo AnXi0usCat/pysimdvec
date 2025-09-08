@@ -3,6 +3,55 @@ use std::simd::Simd;
 
 type V = Simd<f32, 8>;
 
+/// Add two vectors (shorter is zero-padded).
+pub fn add(a: &[f32], b: &[f32]) -> Vec<f32> {
+    unsafe {
+    binop(a, b, Op::Add)
+    }
+}
+
+/// Subtract two vectors (a - b; shorter is zero-padded).
+pub fn sub(a: &[f32], b: &[f32]) -> Vec<f32> {
+    unsafe {
+    binop(a, b, Op::Sub)
+    }
+}
+
+/// Multiply two vectors (shorter is zero-padded).
+pub fn mul(a: &[f32], b: &[f32]) -> Vec<f32> {
+    unsafe {
+        binop(a, b, Op::Mul)
+    }
+}
+
+/// Vector + scalar (element-wise).
+pub fn add_scalar(v: &[f32], s: f32) -> Vec<f32> {
+    unsafe {
+    vec_scalar_op(v, s, Vs::Add)
+    }
+}
+
+/// Vector - scalar (element-wise).
+pub fn sub_scalar(v: &[f32], s: f32) -> Vec<f32> {
+    unsafe {
+    vec_scalar_op(v, s, Vs::SubScalarFromVec)
+    }
+}
+
+/// Scalar - vector (element-wise): s - v[i].
+pub fn scalar_sub(s: f32, v: &[f32]) -> Vec<f32> {
+    unsafe {
+    vec_scalar_op(v, s, Vs::SubVecFromScalar)
+    }
+}
+
+/// Vector * scalar (element-wise).
+pub fn mul_scalar(v: &[f32], s: f32) -> Vec<f32> {
+    unsafe {
+    vec_scalar_op(v, s, Vs::Mul)
+    }
+}
+
 #[derive(Clone, Copy)]
 enum Op {
     Add,
