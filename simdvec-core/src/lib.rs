@@ -178,3 +178,28 @@ fn vec_scalar_op(v: &[f32], sc: f32, kind: Vs) -> Vec<f32> {
     }
     out
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn binop_padding() {
+        let a = vec![1.0, 2.0, 3.0, 4.0];
+        let b = vec![10.0, 20.0];
+        assert_eq!(add(&a, &b), vec![11.0, 22.0, 3.0, 4.0]);  // add, leftover a
+        assert_eq!(sub(&a, &b), vec![ -9.0, -18.0, 3.0, 4.0]); // a-b, leftover a
+        assert_eq!(mul(&a, &b), vec![10.0, 40.0, 0.0, 0.0]);   // a*b, leftover zeros
+        let c = vec![5.0];
+        assert_eq!(sub(&c, &a), vec![4.0, -2.0, -3.0, -4.0]); // 0 - a tail
+    }
+
+    #[test]
+    fn vec_scalar() {
+        let v = vec![1.0, 2.0, 3.0];
+        assert_eq!(add_scalar(&v, 2.0), vec![3.0, 4.0, 5.0]);
+        assert_eq!(sub_scalar(&v, 2.0), vec![-1.0, 0.0, 1.0]);
+        assert_eq!(scalar_sub(2.0, &v), vec![1.0, 0.0, -1.0]);
+        assert_eq!(mul_scalar(&v, 3.0), vec![3.0, 6.0, 9.0]);
+    }
+}
