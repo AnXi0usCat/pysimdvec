@@ -17,3 +17,12 @@ enum Vs {
     SubVecFromScalar,
     SubScalarFromVec,
 }
+
+#[inline]
+fn scalar_bin(a: f32, b:f32, op: Op) -> f32 {
+    match op {
+        Op::Add => a + b,
+        Op::Sub => a - b,
+        Op::Mul => a * b,
+    }
+}
