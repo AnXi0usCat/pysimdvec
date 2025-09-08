@@ -1,0 +1,23 @@
+[build-system]
+requires = ["maturin>=1.5,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "pysimdvec"
+version = "0.1.0"
+requires-python = ">=3.8"
+description = "Python bindings for simdvec-core (vector add/sub/mul with zero-padding)"
+authors = [{ name = "You" }]
+readme = "../README.md"
+license = { text = "MIT OR Apache-2.0" }
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Rust",
+  "Topic :: Scientific/Engineering",
+]
+
+[tool.maturin]
+# Build the pysimdvec crate
+module-name = "pysimdvec"
+features = []
+
