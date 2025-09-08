@@ -27,6 +27,7 @@ fn scalar_bin(a: f32, b: f32, op: Op) -> f32 {
     }
 }
 
+#[target_feature(enable = "avx2")]
 fn binop(a: &[f32], b: &[f32], op: Op) -> Vec<f32> {
     const LANES: usize = V::LEN;
 
@@ -68,7 +69,7 @@ fn binop(a: &[f32], b: &[f32], op: Op) -> Vec<f32> {
                 out[common..].copy_from_slice(&a[common..]);
             },
             Op::Mul => {
-                // a * 0.0 already zeroes out
+                // a * 0.0 already zeroed out
             }
         }
     } else if b_len > a_len {
@@ -88,6 +89,43 @@ fn binop(a: &[f32], b: &[f32], op: Op) -> Vec<f32> {
             }
         }
     }
+    out
+}
 
+#[target_feature(enable = "avx2")]
+fn vec_scalar_op(v: &[f32], sc: f32, kind: Vs) -> Vec<f32> {
+    const LANES: usize = V::LEN;
+
+    let n = v.len();
+    let mut out = vec![0.0f32; n];
+    let main = (n / LANES) * LANES;
+    let vs = V::splat(sc);
+
+    let (v_main, _) = v[..main].as_chunks::<LANES>();
+    let (out_main, _) = out[..main].as_chunks_mut::<LANES>();
+
+    // main logic
+    for (v8, o8) in v_main.iter().zip(out_main) {
+        let vv = V::from_array(*v8);
+
+        let v_op = match kind {
+            Vs::Add => vv + vs,
+            Vs::SubVecFromScalar => vs - vv,
+            Vs::SubScalarFromVec => vv - vs,
+            Vs::Mul => vv * vs,
+        };
+
+        *o8 = v_op.to_array();
+    }
+
+    // remainder logic
+    for i in main..n {
+        out[i] = match kind {
+            Vs::Add => v[i] + sc,
+            Vs::Mul => v[i] * sc,
+            Vs::SubScalarFromVec => v[i] - sc,
+            Vs::SubVecFromScalar => sc - v[i]
+        };
+    }
     out
 }
