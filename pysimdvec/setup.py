@@ -9,7 +9,7 @@ setup(
         RustExtension(
             "pysimdvec._pysimdvec",
             path="Cargo.toml",
-            binding=Binding.Py03
+            binding=Binding.PyO3
         )
     ],
     zip_safe=False,
