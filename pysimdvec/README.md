@@ -45,6 +45,7 @@ sub: a - b; leftover on a stays as a, leftover on b becomes -b
 mul: leftover = 0
 
 ## Project layout
+```
 pysimdvec/
 ├─ setup.py
 ├─ pyproject.toml
@@ -55,7 +56,7 @@ pysimdvec/
 │  └─ src/lib.rs
 └─ pysimdvec/
    └─ __init__.py             # Python package that exposes Array
-
+```
 
 simdvec_core contains portable SIMD code (std::simd), tested in Rust.
 
