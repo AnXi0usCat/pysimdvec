@@ -37,7 +37,7 @@ fn mul_scalar(v: Vec<f32>, s: f32) -> PyResult<Vec<f32>> {
 }
 
 #[pymodule]
-fn pysimdvec(m: &Bound<'_, PyModule>) -> PyResult<()> {
+fn _pysimdvec(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(add, m)?)?;
     m.add_function(wrap_pyfunction!(sub, m)?)?;
     m.add_function(wrap_pyfunction!(mul, m)?)?;
