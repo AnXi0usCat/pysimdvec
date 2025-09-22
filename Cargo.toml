@@ -1,3 +1,12 @@
-[workspace]
-members = ["simdvec-core", "pysimdvec"]
-resolver = "2"
+[package]
+name = "pysimdvec"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+name = "_pysimdvec"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.26", features = ["extension-module"] }
+simdvec-core = { path = "simdvec-core" }
