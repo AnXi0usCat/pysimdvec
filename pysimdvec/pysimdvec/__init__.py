@@ -1,3 +1,7 @@
-from _pysimdvec import Array
+from ._pysimdvec import (
+        add,
+        sub,
+        mul
+)
 
-__all__ = ["Array"]
+__all__ = ["add", "sub", "mul"]
