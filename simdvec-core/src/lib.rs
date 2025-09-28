@@ -1,6 +1,6 @@
 #![feature(portable_simd)]
 use core::f32;
-use std::{ops::Div, simd::Simd};
+use std::simd::Simd;
 
 type V = Simd<f32, 8>;
 
@@ -224,8 +224,16 @@ mod tests {
         assert_eq!(add(&a, &b), vec![11.0, 22.0, 3.0, 4.0]);  // add, leftover a
         assert_eq!(sub(&a, &b), vec![ -9.0, -18.0, 3.0, 4.0]); // a-b, leftover a
         assert_eq!(mul(&a, &b), vec![10.0, 40.0, 0.0, 0.0]);   // a*b, leftover zeros
+        // test division
+        for (&test, expected) in div(&a, &b).iter().zip(vec![0.1, 0.1, f32::NAN, f32::NAN]) {
+            if test.is_nan() && expected.is_nan() {} // NAN is not equal to anything
+            else {
+                assert_eq!(test, expected);
+            }
+        } 
         let c = vec![5.0];
         assert_eq!(sub(&c, &a), vec![4.0, -2.0, -3.0, -4.0]); // 0 - a tail
+        assert_eq!(div(&c, &a), vec![5.0, 0.0, 0.0, 0.0]); // 0 - a tail
     }
 
     #[test]
@@ -235,5 +243,7 @@ mod tests {
         assert_eq!(sub_scalar(&v, 2.0), vec![-1.0, 0.0, 1.0]);
         assert_eq!(scalar_sub(2.0, &v), vec![1.0, 0.0, -1.0]);
         assert_eq!(mul_scalar(&v, 3.0), vec![3.0, 6.0, 9.0]);
+        assert_eq!(div_scalar(&v, 1.0), vec![1.0, 2.0, 3.0]);
+        assert_eq!(scalar_div(&v, 1.0), vec![1.0, 0.5, 0.33333334]);
     }
 }
