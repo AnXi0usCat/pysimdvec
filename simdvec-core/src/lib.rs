@@ -65,7 +65,7 @@ pub fn div_scalar(v: &[f32], s: f32) -> Vec<f32> {
     }
 }
 
-pub fn scalar_div(v: &[f32], s: f32) -> Vec<f32> {
+pub fn scalar_div(s: f32, v: &[f32]) -> Vec<f32> {
     unsafe {
         vec_scalar_op(v, s, Vs::DivScalarByVec)
     }
@@ -244,6 +244,6 @@ mod tests {
         assert_eq!(scalar_sub(2.0, &v), vec![1.0, 0.0, -1.0]);
         assert_eq!(mul_scalar(&v, 3.0), vec![3.0, 6.0, 9.0]);
         assert_eq!(div_scalar(&v, 1.0), vec![1.0, 2.0, 3.0]);
-        assert_eq!(scalar_div(&v, 1.0), vec![1.0, 0.5, 0.33333334]);
+        assert_eq!(scalar_div(1.0, &v), vec![1.0, 0.5, 0.33333334]);
     }
 }
