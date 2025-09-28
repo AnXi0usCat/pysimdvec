@@ -50,8 +50,8 @@ fn div_scalar(v: Vec<f32>, s: f32) -> PyResult<Vec<f32>> {
 }
 
 #[pyfunction]
-fn scalar_div(v: Vec<f32>, s: f32) -> PyResult<Vec<f32>> {
-    Ok(simdvec_core::scalar_div(&v, s))
+fn scalar_div(s: f32, v: Vec<f32>) -> PyResult<Vec<f32>> {
+    Ok(simdvec_core::scalar_div(s, &v))
 }
 
 #[pyclass(module = "pysimdvec._pysimdvec")]
@@ -141,12 +141,36 @@ impl Array {
         } else if let Ok(s) = rhs.extract::<i64>() {
             Ok(Self { data: simdvec_core::mul_scalar(&self.data, s as f32)})
         } else {
-            Err(PyTypeError::new_err("__add__ expects Array or number"))
+            Err(PyTypeError::new_err("__mul__ expects Array or number"))
         }
     }
 
     fn __rmul__(&self, lhs: &Bound<PyAny>) -> PyResult<Self> {
         self.__mul__(lhs)
+    }
+
+    fn __div__(&self, rhs: &Bound<PyAny>) -> PyResult<Self> {
+        if let Ok(o) = rhs.extract::<Array>() {
+            Ok(Self { data: simdvec_core::div(&self.data, &o.data)})
+        } else if let Ok(s) = rhs.extract::<f32>() {
+            Ok(Self { data: simdvec_core::div_scalar(&self.data, s)})
+        } else if let Ok(s) = rhs.extract::<i64>() {
+            Ok(Self { data: simdvec_core::div_scalar(&self.data, s as f32)})
+        } else {
+            Err(PyTypeError::new_err("__div__ expects array or number"))
+        }
+    }
+    
+    fn __rdiv__(&self, lhs: &Bound<PyAny>) -> PyResult<Self> {
+        if let Ok(o) = lhs.extract::<Array>() {
+            Ok(Self { data: simdvec_core::div(&o.data, &self.data)})
+        } else if let Ok(s) = lhs.extract::<f32>() {
+            Ok(Self { data: simdvec_core::scalar_div(s, &self.data)})
+        } else if let Ok(s) = lhs.extract::<i64>() {
+            Ok(Self { data: simdvec_core::scalar_div(s as f32, &self.data)})
+        } else {
+            Err(PyTypeError::new_err("__rdiv__ expects array or number"))
+        }
     }
 }
 
