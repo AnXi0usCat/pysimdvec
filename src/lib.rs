@@ -149,7 +149,7 @@ impl Array {
         self.__mul__(lhs)
     }
 
-    fn __div__(&self, rhs: &Bound<PyAny>) -> PyResult<Self> {
+    fn __truediv__(&self, rhs: &Bound<PyAny>) -> PyResult<Self> {
         if let Ok(o) = rhs.extract::<Array>() {
             Ok(Self { data: simdvec_core::div(&self.data, &o.data)})
         } else if let Ok(s) = rhs.extract::<f32>() {
@@ -161,7 +161,7 @@ impl Array {
         }
     }
     
-    fn __rdiv__(&self, lhs: &Bound<PyAny>) -> PyResult<Self> {
+    fn __rtruediv__(&self, lhs: &Bound<PyAny>) -> PyResult<Self> {
         if let Ok(o) = lhs.extract::<Array>() {
             Ok(Self { data: simdvec_core::div(&o.data, &self.data)})
         } else if let Ok(s) = lhs.extract::<f32>() {
